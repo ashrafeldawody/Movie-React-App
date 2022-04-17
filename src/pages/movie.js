@@ -24,7 +24,8 @@ export default function Movie() {
                 setMovie(res.data)
                 axiosInstance.get(`/movie/${id}/credits`)
                     .then((res) => {
-                        setCast(res.data.cast.slice(0, 10))
+                        //take only 10 actors with existing profile image
+                        setCast(res.data.cast.filter(actor => actor.profile_path !== null).slice(0, 10))
                         setIsLoading(false)
                     })
                     .catch((error) => console.log(error))
@@ -42,7 +43,7 @@ export default function Movie() {
                 <Card sx={{ display: 'flex', m: 4, p: 4 }} variant="outlined">
                     <CardMedia
                         component="img"
-                        sx={{ width: '30%',maxHeight: 600 }}
+                        sx={{ maxHeight: 600 }}
                         image={"https://image.tmdb.org/t/p/w500/" + (movie.poster_path || movie.backdrop_path)}
                         alt="Live from space album cover"
                     />
@@ -83,7 +84,7 @@ export default function Movie() {
 
                         </CardContent>
                         <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                            <Cast cast={cast}/>
+                            <Cast cast={cast} />
                         </Box>
                     </Box>
 

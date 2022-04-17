@@ -2,25 +2,24 @@ import { Grid, Paper, Pagination, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { axiosInstance } from '../config/api';
 import MovieCard from '../components/movieCard';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 export default function Movies() {
-
+  const navigate = useNavigate();
   const { page } = useParams();
   let pageID = page || 1;
   const [movies, setMovies] = useState([]);
-  const [currentPage, setCurrentPage] = useState(pageID);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    axiosInstance.get(`/movie/popular?page=${currentPage}`)
+    axiosInstance.get(`/movie/popular?page=${pageID}`)
       .then((res) => {
         setMovies(res.data.results)
         setIsLoading(false)
       })
       .catch((error) => console.log(error))
-  }, [currentPage])
+  }, [pageID])
 
   const handleChange = (e, value) => {
-    setCurrentPage(value)
+    navigate(`/movies/${value}`, { replace: true });
   }
   if (isLoading)
     return (
@@ -40,7 +39,7 @@ export default function Movies() {
             </Grid>
           ))}
         </Grid>
-        <Pagination count={500} onChange={handleChange} page={parseInt(currentPage)} variant="outlined" shape="rounded" />
+        <Pagination count={500} onChange={handleChange} page={parseInt(pageID)} variant="outlined" shape="rounded" />
 
       </Paper>
     );
